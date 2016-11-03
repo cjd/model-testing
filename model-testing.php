@@ -1,5 +1,3 @@
-<script type="text/javascript" src="js/jquery-1.9.1.js"></script>
-
 <?php
 $FPPMM = $settings['fppBinDir']."/fppmm";
 
@@ -129,13 +127,6 @@ foreach ($my_models as $model) {
 ?>
 </tr>
 </table>
-
-<form enctype="multipart/form-data" method="POST">
-    <input type="hidden" name="MAX_FILE_SIZE" value="60000" />
-    <!-- Name of input element determines name in $_FILES array -->
-    Send this file: <input name="modelfile" type="file" />
-    <input type="submit" value="Upload xlights models export (csv)" />
-</form>
 
 </fieldset>
 </div>
