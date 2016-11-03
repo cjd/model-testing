@@ -1,3 +1,5 @@
+<script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+
 <?php
 $FPPMM = $settings['fppBinDir']."/fppmm";
 
@@ -36,6 +38,7 @@ if (isset($_FILES['modelfile'])) {
 		}
 		fclose($mapfile);
 		print "<center><b>Models imported - Restart FPPD to apply changes</b></center><br>";
+
 	}
 }
 if (file_exists($settings['channelMemoryMapsFile'])) {
@@ -44,7 +47,9 @@ if (file_exists($settings['channelMemoryMapsFile'])) {
 	$my_models = array();
 	foreach ($lines as $line) {
 		$array = str_getcsv($line);
-		$my_models[$array[0]] = $array[0];
+		if ($array[0] != "") {
+			$my_models[$array[0]] = $array[0];
+		}
 	}
 }
 
@@ -54,12 +59,15 @@ if (file_exists($settings['channelMemoryMapsFile'])) {
 function buttonClicked(cell, model) {
 	var bgcolor=$(cell).css("backgroundColor");
 	var rgb = bgcolor.replace(/\s/g,'').match(/^rgba?\((\d+),(\d+),(\d+)/i);
-	if (parseInt(rgb[1]) == 255) {
-		$(cell).animate({'backgroundColor': "#888888"},100);
-		ModelOff(model);
-	} else {
-		$(cell).animate({'backgroundColor': "#ffff00"},100);
+	//f (parseInt(rgb[1]) == 255) {
+	if ($(cell).hasClass("modeloff")) {
+		$(cell).removeClass("modeloff");
+		$(cell).addClass("modelon");
 		ModelOn(model);
+	} else {
+		$(cell).removeClass("modelon");
+		$(cell).addClass("modeloff");
+		ModelOff(model);
 	}
 }
 
@@ -79,11 +87,33 @@ function ModelOff(model){
 	xmlhttp.send();
 }
 </script>
+
+<style>
+td {
+	text-align: center;
+	font-size: 30px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	max-width:1px;
+}
+
+.modelon {
+	background-color: #ffff00;
+}
+
+.modeloff {
+	background-color: #dddddd;
+}
+</style>
 <div id="start" class="settings">
 <fieldset>
 <legend>Model testing</legend>
 
-<table border=1 width='100%' height='90%' bgcolor='#000000'>
+<table border=1 width='100%' height='90%' bgcolor='#222222'>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
 <tr>
 <?php
 
@@ -94,10 +124,8 @@ foreach ($my_models as $model) {
 	if (($buttonCount > 1) && (($buttonCount % 2) == 1))
 		echo "</tr><tr>\n";
 
-	printf( "<td width='50%%' bgcolor='#888888' align='center' onClick='buttonClicked(this, \"%s\");'><b><font size='10px'>%s</font></b></td>\n", $model, $model);
+	printf("<td onClick='buttonClicked(this, \"%s\");' class=modeloff><b>%s</b></td>\n", $model, $model);
 }
-if (($buttonCount % 2) == 0)
-	echo "<td bgcolor='black'>&nbsp;</td>\n";
 ?>
 </tr>
 </table>
