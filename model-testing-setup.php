@@ -1,4 +1,23 @@
 <?php
+
+include_once "commonFunctions.inc.php";
+
+$pluginName="model-testing";
+$pluginVersion="1.0";
+
+$pluginUpdateFile = $settings['pluginDirectory']."/".$pluginName."/"."pluginUpdate.inc";
+
+$gitURL = "https://github.com/cjd/model-testing.git";
+
+if(isset($_POST['updatePlugin']))
+{
+    logEntry("updating plugin...");
+    $updateResult = updatePluginFromGitHub($gitURL, $branch="master", $pluginName);
+
+    echo $updateResult."<br/> \n";
+}
+
+
 if (isset($_FILES['modelfile'])) {
 	if (file_exists($_FILES['modelfile']['tmp_name'])) {
 		$csvData = file_get_contents($_FILES['modelfile']['tmp_name']);
@@ -36,6 +55,16 @@ if (isset($_FILES['modelfile'])) {
 </form>
 
 </fieldset>
+
+<?
+ if(file_exists($pluginUpdateFile))
+ {
+    //echo "updating plugin included";
+    include $pluginUpdateFile;
+}
+?>
+<p>To report a bug, please file it against <?php echo $gitURL;?>
+
 </div>
 
 <br />
