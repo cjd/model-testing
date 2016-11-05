@@ -1,4 +1,20 @@
 <?php
+include_once "commonFunctions.inc.php";
+
+$pluginName="model-testing";
+$pluginVersion="1.0";
+$pluginUpdateFile = $settings['pluginDirectory']."/".$pluginName."/"."pluginUpdate.inc";
+
+$gitURL = "https://github.com/cjd/model-testing.git";
+
+if(isset($_POST['updatePlugin']))
+{
+    logEntry("updating plugin...");
+    $updateResult = updatePluginFromGitHub($gitURL, $branch="master", $pluginName);
+
+    echo $updateResult."<br/> \n";
+}
+
 $FPPMM = $settings['fppBinDir']."/fppmm";
 
 if (isset($_REQUEST['command'])) {
@@ -127,6 +143,15 @@ foreach ($my_models as $model) {
 ?>
 </tr>
 </table>
+
+<?
+ if(file_exists($pluginUpdateFile))
+ {
+    //echo "updating plugin included";
+    include $pluginUpdateFile;
+}
+?>
+<p>To report a bug, please file it against <?php echo $gitURL;?>
 
 </fieldset>
 </div>
